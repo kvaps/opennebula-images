@@ -15,6 +15,7 @@ $gf add-drive /tmp/image.qcow2
 $gf run
 $gf part-disk /dev/sdb msdos
 $gf mkfs-opts ext4 /dev/sdb1 features:^64bit
+$gf set-e2label /dev/sdb1 cloudimg-rootfs
 $gf part-set-bootable /dev/sdb 1 true
 $gf mount /dev/sda /
 $gf command "apk add --no-cache alpine-conf"
@@ -22,13 +23,18 @@ $gf mount /dev/sdb1 /mnt
 $gf rm-rf /mnt/lost+found
 $gf mkdir /mnt/boot
 $gf command "setup-disk -k virt /mnt"
+$gf command "apk add --root /mnt e2fsprogs"
 
 # Fix networking
 $gf write /mnt/etc/network/interfaces "auto lo
 iface lo inet loopback
 "
 
-# Enable setvices
+# Update fstab
+$gf write /mnt/etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults        0 0
+"
+
+# Enable services
 $gf ln_s /etc/init.d/bootmisc /mnt/etc/runlevels/boot/
 $gf ln_s /etc/init.d/hostname /mnt/etc/runlevels/boot/
 $gf ln_s /etc/init.d/hwclock /mnt/etc/runlevels/boot/
