@@ -1,0 +1,59 @@
+#!/bin/sh
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <minirootfs_image> <destination_image> [size]"
+  exit 1
+fi
+
+. $(dirname $0)/functions.sh
+
+SRC=$1
+DST=$2
+SIZE=${3:-1G}
+
+set -ev
+download "$SRC" "$DST.orig.tar.gz"
+virt-make-fs -s +50M -F qcow2 "$DST.orig.tar.gz" "$DST.orig"
+rm -f "$DST.orig.tar.gz"
+
+gf_listen
+gf add-drive "$DST.orig"
+gf disk-create "$DST" qcow2 "$SIZE"
+gf add-drive "$DST"
+gf run
+gf part-disk /dev/sdb msdos
+gf mkfs-opts ext4 /dev/sdb1 features:^64bit
+gf set-e2label /dev/sdb1 cloudimg-rootfs
+gf part-set-bootable /dev/sdb 1 true
+gf mount /dev/sda /
+gf command "apk add --no-cache alpine-conf"
+gf mount /dev/sdb1 /mnt
+gf rm-rf /mnt/lost+found
+gf mkdir /mnt/boot
+gf command "setup-disk -k virt /mnt"
+gf command "apk add --root /mnt e2fsprogs"
+gf write /mnt/etc/network/interfaces "auto lo
+iface lo inet loopback
+"
+gf write /mnt/etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults        0 0
+"
+gf ln_s /etc/init.d/bootmisc /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/hostname /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/hwclock /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/modules /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/networking /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/swap /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/sysctl /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/syslog /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/urandom /mnt/etc/runlevels/boot/
+gf ln_s /etc/init.d/killprocs /mnt/etc/runlevels/shutdown/
+gf ln_s /etc/init.d/savecache /mnt/etc/runlevels/shutdown/
+gf ln_s /etc/init.d/mount-ro /mnt/etc/runlevels/shutdown/
+gf ln_s /etc/init.d/devfs /mnt/etc/runlevels/sysinit/
+gf ln_s /etc/init.d/dmesg /mnt/etc/runlevels/sysinit/
+gf ln_s /etc/init.d/hwdrivers /mnt/etc/runlevels/sysinit/
+gf ln_s /etc/init.d/mdev /mnt/etc/runlevels/sysinit/
+
+gf umount-all
+gf exit
+
+rm -f "$DST.orig"
