@@ -4,7 +4,7 @@ set -e
 gf="guestfish --remote"
 
 # Download cloud image
-curl https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2c -o /tmp/CentOS-7-x86_64-GenericCloud.qcow2c
+curl -L https://download.fedoraproject.org/pub/fedora/linux/releases/30/Cloud/x86_64/images/Fedora-Cloud-Base-30-1.2.x86_64.qcow2 -o /tmp/fedora.qcow2
 
 # Prepare new image
 eval "$(guestfish --listen)"
@@ -21,7 +21,7 @@ $gf umount /dev/sda1
 $gf exit
 
 # Copy base system
-guestfish --ro -a /tmp/CentOS-7-x86_64-GenericCloud.qcow2c -m /dev/sda1 -- tar-out / - | \
+guestfish --ro -a /tmp/fedora.qcow2 -m /dev/sda1 -- tar-out / - | \
  guestfish --rw -a /tmp/image.qcow2 -m /dev/sda1 -- tar-in - /
 
 # Fix fstab and bootloader
