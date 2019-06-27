@@ -1,10 +1,30 @@
 #!/bin/sh
 
+run() {
+  # Print header
+  printf "\n\e[1m\e[7m"
+  echo " $@ "
+  printf "\e[0m\n"
+
+  # Execute the command, swap STDOUT and STDERR, colour STDOUT, swap back
+  (set -o pipefail; (eval "$(for phrase in "$@"; do echo -n "'$phrase' "; done)") 3>&1 1>&2 2>&3 | sed -e "s/^\(.*\)$/$(echo -en \\033)[31;1m\1$(echo -en \\033)[0m/") 3>&1 1>&2 2>&3
+  ec=$?
+
+  # Print result
+  if [ $ec -eq 0 ]; then
+    printf "\n\033[1;32m^^^ Succeed ^^^\e[0m\n\n"
+    return 0
+  else
+    printf "\n\033[1;31m^^^ Failed ^^^\e[0m\n\n"
+    return $ec
+  fi
+}
+
 download() {
   local src=$1 dst=$2
   case "${src%%:*}" in
   http|https|ftp)
-    curl -L "$src" -o "$dst"
+    curl -L "$src" -o "$dst" 2>&1
     ;;
   *)
     cp "$src" "$dst"

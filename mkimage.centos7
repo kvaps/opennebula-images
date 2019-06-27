@@ -20,7 +20,7 @@ gf_listen
 gf add-drive "$DST"
 gf run
 gf mount /dev/sda1 /
-gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults        0 0
+gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 0
 "
 gf command "grub2-install /dev/sda"
 gf command "grub2-mkconfig -o /boot/grub2/grub.cfg"
@@ -30,6 +30,9 @@ gf command "yum install -y epel-release"
 gf command "yum install -y /one-context.rpm"
 gf rm_f "/one-context.rpm"
 gf command "yum clean all"
+
+gf command "sed -i '/^SELINUX=/ s/=.*/=disabled/g' /etc/selinux/config"
+gf command "sed -i 's/#\\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config"
 
 gf umount-all
 gf exit

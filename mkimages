@@ -1,16 +1,10 @@
 #!/bin/sh
 DST=${1:-images}
+
+. $(dirname $0)/functions.sh
+
 export LIBGUESTFS_BACKEND=direct
 export LIBGUESTFS_MEMSIZE=2048
-
-run() { 
-  echo
-  printf "\e[1m\e[7m"
-  echo " $@ "
-  printf "\e[0m"
-  echo
-  "$@" 2>&1>&3|sed 's,.*,\x1B[91m&\x1B[0m,'>&2;
-} 3>&1
 
 mkdir -p "$DST"
 

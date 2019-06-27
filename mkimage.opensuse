@@ -20,10 +20,10 @@ gf_listen
 gf add-drive "$DST"
 gf run
 gf mount /dev/sda1 /
-gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults        0 0
+gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 0
 "
 gf command "grub2-install /dev/sda"
-gf command "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"console=ttyS0,115.10n8 console=tty0 net.ifnames=0 NON_PERSISTENT_DEVICE_NAMES=1\"/' /etc/default/grub"
+gf command "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"net.ifnames=0 NON_PERSISTENT_DEVICE_NAMES=1\"/' /etc/default/grub"
 gf command "grub2-mkconfig -o /boot/grub2/grub.cfg"
 
 gf command "wget https://github.com/OpenNebula/addon-context-linux/releases/download/v5.8.0/one-context-5.8.0-1.suse.noarch.rpm -O /one-context.rpm"

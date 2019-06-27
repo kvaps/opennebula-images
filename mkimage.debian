@@ -20,8 +20,11 @@ gf_listen
 gf add-drive "$DST"
 gf run
 gf mount /dev/sda1 /
-gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults        0 0
+gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 0
 "
+
+gf command "sed -i '/^GRUB_TIMEOUT=/ s/=.*/=1/' /etc/default/grub"
+gf command "sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/=.*/=\"biosdevname=0 net.ifnames=0 systemd.show_status=true\"/' /etc/default/grub"
 gf command "grub-install /dev/sda"
 gf command "update-grub"
 
@@ -31,6 +34,8 @@ gf command "apt-get update"
 gf sh "dpkg -i /one-context.deb || apt-get install -fy"
 gf rm_f "/one-context.deb"
 gf command "apt-get clean"
+
+gf command "sed -i 's/#\\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config"
 
 gf umount-all
 gf exit
