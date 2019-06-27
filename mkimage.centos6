@@ -28,6 +28,7 @@ gf write /boot/grub/device.map "(fd0)   /dev/fd0
 (hd0)   /dev/sda"
 gf command "grub-install /dev/sda"
 gf command "sed -i 's/root=[^ ]\\+/root=UUID=$(gf get-uuid /dev/sda1)/g' /boot/grub/grub.conf"
+gf command "sed -i '/^\\(terminal\\|serial\\)/d' /boot/grub/grub.conf"
 
 gf ln_sf "/usr/share/zoneinfo/${TIMEZONE:-UTC}" "/etc/localtime"
 
