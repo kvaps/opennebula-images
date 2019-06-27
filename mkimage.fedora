@@ -25,6 +25,8 @@ gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,no
 gf command "grub2-install /dev/sda"
 gf command "grub2-mkconfig -o /boot/grub2/grub.cfg"
 
+gf ln_sf "/usr/share/zoneinfo/${TIMEZONE:-UTC}" "/etc/localtime"
+
 gf command "curl -L https://github.com/OpenNebula/addon-context-linux/releases/download/v5.8.0/one-context-5.8.0-1.el7.noarch.rpm -o /one-context.rpm"
 gf command "yum install -y /one-context.rpm network-scripts"
 gf rm_f "/one-context.rpm"

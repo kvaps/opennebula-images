@@ -30,7 +30,7 @@ gf mount /dev/sdb1 /mnt
 gf rm-rf /mnt/lost+found
 gf mkdir /mnt/boot
 gf command "setup-disk -k virt /mnt"
-gf command "apk add --root /mnt e2fsprogs openssh"
+gf command "apk add --root /mnt e2fsprogs openssh tzdata"
 gf write /mnt/etc/network/interfaces "auto lo
 iface lo inet loopback
 "
@@ -54,10 +54,14 @@ gf ln_s /etc/init.d/hwdrivers /mnt/etc/runlevels/sysinit/
 gf ln_s /etc/init.d/mdev /mnt/etc/runlevels/sysinit/
 gf ln_s /etc/init.d/sshd /mnt/etc/runlevels/default/
 
+gf ln_sf "/usr/share/zoneinfo/${TIMEZONE:-UTC}" "/mnt/etc/localtime"
+
 gf command "wget https://github.com/OpenNebula/addon-context-linux/releases/download/v5.8.0/one-context-5.8.0-r1.apk -O /one-context.apk"
 gf command "apk add --root /mnt --allow-untrusted /one-context.apk"
 gf rm_f "/one-context.apk"
 gf sh "rm -rf /mnt/var/cache/apk/*"
+
+gf command "sed -i 's/#\\?PermitRootLogin.*/PermitRootLogin yes/' /mnt/etc/ssh/sshd_config"
 
 gf umount-all
 gf exit
