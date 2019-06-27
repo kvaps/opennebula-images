@@ -7,7 +7,7 @@ run() {
   printf "\e[0m\n"
 
   # Execute the command, swap STDOUT and STDERR, colour STDOUT, swap back
-  (set -o pipefail; (eval "$(for phrase in "$@"; do echo -n "'$phrase' "; done)") 3>&1 1>&2 2>&3 | sed -e "s/^\(.*\)$/$(echo -en \\033)[31;1m\1$(echo -en \\033)[0m/") 3>&1 1>&2 2>&3
+  (set -o pipefail; (eval "$(for phrase in "$@"; do echo -n "'$phrase' "; done)") 3>&1 1>&2 2>&3 | sed -e "s/^\(.*\)$/$(echo -en \\033)[31m\1$(echo -en \\033)[0m/") 3>&1 1>&2 2>&3
   ec=$?
 
   # Print result
