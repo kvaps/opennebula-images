@@ -22,15 +22,18 @@ gf run
 gf mount /dev/sda1 /
 gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults        0 0
 "
-gf command "grub-install /dev/sda"
-gf command "update-grub"
 
-gf command "wget https://github.com/OpenNebula/addon-context-linux/releases/download/v5.8.0/one-context_5.8.0-1.deb -O /one-context.deb"
-gf command "apt-get purge -y cloud-init"
-gf command "apt-get update"
-gf sh "dpkg -i /one-context.deb || apt-get install -fy"
-gf rm_f "/one-context.deb"
-gf command "apt-get clean"
+gf write /etc/mtab "/dev/sda1 / ext4 rw 0 0"
+gf write /boot/grub/device.map "(fd0)   /dev/fd0
+(hd0)   /dev/sda"
+gf command "grub-install /dev/sda"
+gf command "sed -i 's/root=[^ ]\\+/root=UUID=$(gf get-uuid /dev/sda1)/g' /boot/grub/grub.conf"
+
+gf command "curl -L https://github.com/OpenNebula/addon-context-linux/releases/download/v5.8.0/one-context-5.8.0-1.el6.noarch.rpm -o /one-context.rpm"
+gf command "yum install -y epel-release"
+gf command "yum install -y /one-context.rpm"
+gf rm_f "/one-context.rpm"
+gf command "yum clean all"
 
 gf umount-all
 gf exit
