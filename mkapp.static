@@ -1,0 +1,38 @@
+#!/bin/sh
+
+if [ "$#" -lt 3 ]; then
+  echo "$0 <path> <name> <tag/image>"
+  exit 1
+fi
+
+cat <<EOT
+name: "$2"
+logo: "/logos/$3.png"
+source: "${REPOSITORY_BASE:-https://github.com/kvaps/opennebula-images/raw/master/}$1"
+import_id: "$(uuidgen)"
+origin_id: "-1"
+type: "IMAGE"
+publisher: "kvaps"
+format: "qcow2"
+description: "$2 image for KVM hosts"
+version: "5.8.0-1.20190627"
+tags: "$3"
+regtime: "1561810835"
+size: "$(qemu-img info "$1"  | awk -F': ' '$1 == "virtual size"' | awk -F'[( )]' '{print $(NF-2)/1024/1024}')"
+md5: "$(md5sum $1 | awk '{print $1}')"
+image_template: |
+  DEV_PREFIX= "vd"
+  DRIVER= "qcow2"
+  TYPE= "OS"
+
+vm_template: |
+  CONTEXT = [ NETWORK  ="YES",SSH_PUBLIC_KEY  ="\$USER[SSH_PUBLIC_KEY]"]
+  
+  CPU = "1"
+  GRAPHICS = [ LISTEN  ="0.0.0.0",TYPE  ="vnc"]
+  
+  MEMORY = "128"
+  OS = [ ARCH  ="x86_64"]
+  
+  LOGO = "images/logos/$3.png"
+EOT
