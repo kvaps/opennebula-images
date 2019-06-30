@@ -5,6 +5,9 @@ RUN apt-get update \
  && apt-get -y install \
      libguestfs-tools \
      linux-image-generic \
+     make \
+     bash-completion \
  && apt-get clean
 
-ADD functions.sh mkimage* /
+WORKDIR /build
+ENTRYPOINT [ "/bin/bash", "-l" ]

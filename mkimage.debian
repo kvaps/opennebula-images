@@ -1,14 +1,13 @@
 #!/bin/sh
-if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 <cloud_image> <destination_image> [size]"
+DST=$1
+SIZE=$2
+SRC=$3
+
+if [ "$#" -lt 3 ]; then
+  echo "Usage: $0 <destination_image> <size> <cloud_image_source>"
   exit 1
 fi
 
-. $(dirname $0)/functions.sh
-
-SRC=$1
-DST=$2
-SIZE=${3:-2G}
 
 set -ev
 download_and_unpack "$SRC" "$DST.orig"

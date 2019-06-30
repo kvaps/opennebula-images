@@ -8,11 +8,11 @@ fi
 cat <<EOT
 name: "$2"
 logo: "/logos/$3.png"
-source: "${REPOSITORY_BASE:-https://github.com/kvaps/opennebula-images/raw/master/}$1"
+source: "${BASE_PATH:-https://example.org/images/}$(basename $1)"
 import_id: "$(uuidgen)"
 origin_id: "-1"
 type: "IMAGE"
-publisher: "kvaps"
+publisher: "${PUBLISHER:-Somebody}"
 format: "qcow2"
 description: "$2 image for KVM hosts"
 version: "5.8.0-1.20190627"
