@@ -2,6 +2,22 @@ LIBGUESTFS_BACKEND=direct
 LIBGUESTFS_MEMSIZE=2048
 TIMEZONE=UTC
 
+.PHONY: all clean
+
+all: \
+	images/alpine-3.10.qcow2 \
+	images/ubuntu-18.04.qcow2 \
+	images/ubuntu-16.04.qcow2 \
+	images/debian-9.qcow2 \
+	images/devuan-2.qcow2 \
+	images/centos-6.qcow2 \
+	images/centos-7.qcow2 \
+	images/fedora-30.qcow2 \
+	images/opensuse-leap-15.qcow2
+
+clean:
+	rm -rf images/*
+
 images/alpine-3.10.qcow2:
 	./mkimage.alpine "$@" 500M \
 		"https://alpine.global.ssl.fastly.net/alpine/v3.10/releases/x86_64/alpine-minirootfs-3.10.0-x86_64.tar.gz"
