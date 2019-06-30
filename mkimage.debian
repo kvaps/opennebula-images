@@ -8,6 +8,8 @@ if [ "$#" -lt 3 ]; then
   exit 1
 fi
 
+. $(dirname $0)/functions.sh
+
 
 set -ev
 download_and_unpack "$SRC" "$DST.orig"
