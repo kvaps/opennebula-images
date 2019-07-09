@@ -34,6 +34,10 @@ images/debian-9.qcow2:
 	./mkimage.debian "$@" 2G \
 		"https://cdimage.debian.org/cdimage/openstack/current/debian-9.9.3-20190618-openstack-amd64.qcow2"
 
+images/debian-10.qcow2:
+	./mkimage.debian "$@" 2G \
+		"https://cdimage.debian.org/cdimage/openstack/current/debian-10.0.1-20190708-openstack-amd64.qcow2"
+
 images/devuan-2.qcow2:
 	./mkimage.devuan "$@" 2G \
 		"https://mirror.leaseweb.com/devuan/devuan_ascii/virtual/devuan_ascii_2.0.0_amd64_qemu.qcow2.xz"
