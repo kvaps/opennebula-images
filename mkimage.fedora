@@ -10,10 +10,6 @@ fi
 
 . $(dirname $0)/functions.sh
 
-SRC=$1
-DST=$2
-SIZE=${3:-2G}
-
 set -ev
 download_and_unpack "$SRC" "$DST.orig"
 create_empty_image "$DST" "$SIZE"
