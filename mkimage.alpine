@@ -63,6 +63,7 @@ gf rm_f "/one-context.apk"
 gf sh "rm -rf /mnt/var/cache/apk/*"
 
 gf command "sed -i 's/#\\?PermitRootLogin.*/PermitRootLogin yes/' /mnt/etc/ssh/sshd_config"
+gf command "sed -i 's/root:!:/root:*:/' /etc/shadow"
 
 gf umount-all
 gf exit
