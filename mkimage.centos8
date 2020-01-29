@@ -24,13 +24,19 @@ gf mount /dev/sda1 /
 gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 0
 "
 gf command "grub2-install /dev/sda"
-gf command "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"net.ifnames=0 NON_PERSISTENT_DEVICE_NAMES=1\"/' /etc/default/grub"
+gf command "sed -i 's/console=ttyS0,115200n8 //' /etc/default/grub"
 gf command "grub2-mkconfig -o /boot/grub2/grub.cfg"
+KERNEL="$(gf ls /lib/modules/ | head -n1)"
+gf command "dracut -f /boot/initramfs-$KERNEL.img $KERNEL"
 
-gf command "wget https://github.com/OpenNebula/addon-context-linux/releases/download/v5.10.0/one-context-5.10.0-1.suse.noarch.rpm -O /one-context.rpm"
-gf command "zypper --no-gpg-check install -y /one-context.rpm"
+gf command "curl -L https://github.com/OpenNebula/addon-context-linux/releases/download/v5.10.0/one-context-5.10.0-1.el8.noarch.rpm -o /one-context.rpm"
+gf command "yum install -y epel-release"
+gf command "yum install -y /one-context.rpm"
 gf rm_f "/one-context.rpm"
-gf command "zypper clean --all"
+gf command "yum clean all"
+
+gf command "sed -i '/^SELINUX=/ s/=.*/=disabled/g' /etc/selinux/config"
+gf command "sed -i 's/#\\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config"
 
 gf umount-all
 gf exit

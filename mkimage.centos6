@@ -31,9 +31,7 @@ gf command "grub-install /dev/sda"
 gf command "sed -i 's/root=[^ ]\\+/root=UUID=$(gf get-uuid /dev/sda1)/g' /boot/grub/grub.conf"
 gf command "sed -i '/^\\(terminal\\|serial\\)/d' /boot/grub/grub.conf"
 
-gf ln_sf "/usr/share/zoneinfo/${TIMEZONE:-UTC}" "/etc/localtime"
-
-gf command "curl -L https://github.com/OpenNebula/addon-context-linux/releases/download/v5.8.0/one-context-5.8.0-1.el6.noarch.rpm -o /one-context.rpm"
+gf command "curl -L https://github.com/OpenNebula/addon-context-linux/releases/download/v5.10.0/one-context-5.10.0-1.el6.noarch.rpm -o /one-context.rpm"
 gf command "yum install -y epel-release"
 gf command "yum install -y /one-context.rpm"
 gf rm_f "/one-context.rpm"
