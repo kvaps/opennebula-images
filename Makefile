@@ -1,6 +1,5 @@
 export LIBGUESTFS_BACKEND=direct
 export LIBGUESTFS_MEMSIZE=2048
-export TIMEZONE=UTC
 
 .PHONY: all clean
 
@@ -9,6 +8,7 @@ all: \
 	images/ubuntu-16.04.qcow2 \
 	images/ubuntu-18.04.qcow2 \
 	images/debian-9.qcow2 \
+	images/debian-10.qcow2 \
 	images/devuan-2.qcow2 \
 	images/centos-6.qcow2 \
 	images/centos-7.qcow2 \
@@ -39,11 +39,11 @@ images/ubuntu-18.04.qcow2:
 
 images/debian-9.qcow2:
 	./mkimage.debian "$@" 2G \
-		"https://cdimage.debian.org/cdimage/openstack/current/debian-9.9.3-20190618-openstack-amd64.qcow2"
+		"https://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2"
 
 images/debian-10.qcow2:
 	./mkimage.debian "$@" 2G \
-		"https://cdimage.debian.org/cdimage/openstack/current/debian-10.0.1-20190708-openstack-amd64.qcow2"
+		"https://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2"
 
 images/devuan-2.qcow2:
 	./mkimage.devuan "$@" 2G \
@@ -71,4 +71,4 @@ images/fedora-31.qcow2:
 
 images/opensuse-leap-15.qcow2:
 	./mkimage.opensuse "$@" 2G \
-		"https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.2/images/openSUSE-Leap-15.2-OpenStack.x86_64.qcow2"
+		"https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.1/images/openSUSE-Leap-15.1-OpenStack.x86_64.qcow2"

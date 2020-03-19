@@ -4,7 +4,7 @@ download() {
   local src=$1 dst=$2
   case "${src%%:*}" in
   http|https|ftp)
-    curl -L "$src" -o "$dst" 2>&1
+    curl -f -L "$src" -o "$dst" 2>&1
     ;;
   *)
     cp "$src" "$dst"
