@@ -1,38 +1,45 @@
 #!/bin/sh
 
-if [ "$#" -lt 3 ]; then
-  echo "$0 <path> <name> <tag/image>"
+if [ "$#" -lt 4 ]; then
+  echo "$0 <path> <name> <version> <tag/image>"
   exit 1
 fi
 
 cat <<EOT
 name: "$2"
-logo: "/logos/$3.png"
-source: "${BASE_PATH:-https://example.org/images/}$(basename $1)"
 import_id: "$(uuidgen)"
-origin_id: "-1"
-type: "IMAGE"
+version: "5.10.0-2.20200319"
 publisher: "${PUBLISHER:-Somebody}"
-format: "qcow2"
 description: "$2 image for KVM hosts"
-version: "5.8.0-1.20190627"
-tags: "$3"
-regtime: "1561810835"
-size: "$(qemu-img info "$1"  | awk -F': ' '$1 == "virtual size"' | awk -F'[( )]' '{print $(NF-2)/1024/1024}')"
-md5: "$(md5sum $1 | awk '{print $1}')"
-image_template: |
-  DEV_PREFIX= "vd"
-  DRIVER= "qcow2"
-  TYPE= "OS"
-
-vm_template: |
-  CONTEXT = [ NETWORK  ="YES",SSH_PUBLIC_KEY  ="\$USER[SSH_PUBLIC_KEY]"]
-  
-  CPU = "1"
-  GRAPHICS = [ LISTEN  ="0.0.0.0",TYPE  ="vnc"]
-  
-  MEMORY = "512"
-  OS = [ ARCH  ="x86_64"]
-  
-  LOGO = "images/logos/$3.png"
+tags:
+- $4
+format: qcow2
+creation_time: 1561810835
+os-id: Alpine Linux
+os-release: '$3'
+os-arch: x86_64
+hypervisor: ALL
+opennebula_version: 4.8, 4.10, 4.12, 4.14, 5.0, 5.2, 5.4, 5.6, 5.8, 5.10
+opennebula_template:
+  context:
+    network: 'YES'
+    ssh_public_key: \$USER[SSH_PUBLIC_KEY]
+  cpu: '1'
+  graphics:
+    listen: 0.0.0.0
+    type: vnc
+  memory: '512'
+  os:
+    arch: x86_64
+  logo: /logos/$4.png
+images:
+- name: $(basename $1)
+  url: "${BASE_PATH:-https://example.org/images/}$(basename $1)"
+  type: OS
+  dev_prefix: vd
+  driver: qcow2
+  size: $(qemu-img info "$1"  | awk -F': ' '$1 == "virtual size"' | awk -F'[( )]' '{print $(NF-2)/1024/1024}')
+  checksum:
+    md5: $(md5sum $1 | awk '{print $1}')"
+    sha256: $(sha256sum $1 | awk '{print $1}')"
 EOT
