@@ -21,7 +21,7 @@ gf_listen
 gf add-drive "$DST"
 gf run
 gf mount /dev/sda1 /
-gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 0
+gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 1
 "
 gf command "grub2-install /dev/sda"
 gf command "grub2-mkconfig -o /boot/grub2/grub.cfg"

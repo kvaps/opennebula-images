@@ -21,7 +21,7 @@ gf_listen
 gf add-drive "$DST"
 gf run
 gf mount /dev/sda1 /
-gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 0
+gf write /etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 1
 "
 
 gf write /etc/mtab "/dev/sda1 / ext4 rw 0 0"

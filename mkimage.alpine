@@ -35,7 +35,7 @@ gf command "apk add --root /mnt e2fsprogs openssh tzdata"
 gf write /mnt/etc/network/interfaces "auto lo
 iface lo inet loopback
 "
-gf write /mnt/etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 0
+gf write /mnt/etc/fstab "LABEL=cloudimg-rootfs   /        ext4   defaults,noatime,nodiratime        0 1
 "
 gf ln_s /etc/init.d/bootmisc /mnt/etc/runlevels/boot/
 gf ln_s /etc/init.d/hostname /mnt/etc/runlevels/boot/
