@@ -26,6 +26,33 @@ RUN yum clean all \
 
 RUN sed -i 's/#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 
+
+# TODO: Cleanup SSH-keys
+
+# ------------------------------------------------------------------------------
+# Ubuntu 20.04
+# ------------------------------------------------------------------------------
+FROM ubuntu:20.04 as ubuntu2004-root
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+ && apt-get install -y \
+      ubuntu-minimal \
+      ubuntu-standard \
+      linux-image-kvm \
+ && wget -O /one-context.deb https://github.com/OpenNebula/addon-context-linux/releases/download/v5.12.0.2/one-context_5.12.0.2-1.deb \
+ && dpkg -i /one-context.deb || apt-get install -fy \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN sed -i 's/#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# TODO: Cleanup SSH-keys
+
+# ------------------------------------------------------------------------------
+# Debian
+# ------------------------------------------------------------------------------
+# tasksel install standard
+
 # ------------------------------------------------------------------------------
 FROM guestfish as centos7-image
 COPY --from=centos7-root / /rootfs
