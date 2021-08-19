@@ -28,8 +28,6 @@ RUN sed -i /etc/ssh/sshd_config \
       -e 's/#\?PermitRootLogin.*/PermitRootLogin yes/' \
       -e 's/^PasswordAuthentication.*/PasswordAuthentication yes/'
 
-# TODO: Cleanup SSH-keys
-
 # ------------------------------------------------------------------------------
 # Ubuntu 20.04
 # ------------------------------------------------------------------------------
@@ -48,8 +46,6 @@ RUN apt-get update \
 RUN sed -i /etc/ssh/sshd_config \
       -e 's/#\?PermitRootLogin.*/PermitRootLogin yes/' \
       -e 's/^PasswordAuthentication.*/PasswordAuthentication yes/'
-
-# TODO: Cleanup SSH-keys
 
 # ------------------------------------------------------------------------------
 # Debian
@@ -70,10 +66,10 @@ RUN sed -i /etc/ssh/sshd_config \
       -e 's/#\?PermitRootLogin.*/PermitRootLogin yes/' \
       -e 's/^PasswordAuthentication.*/PasswordAuthentication yes/'
 
-# TODO: Cleanup SSH-keys
-
 # ------------------------------------------------------------------------------
 FROM guestfish as images
+RUN wget https://raw.githubusercontent.com/OpenNebula/addon-context-linux/v6.0.0/src/usr/sbin/onesysprep
+
 COPY --from=centos7-root / /centos7-root
 COPY --from=ubuntu2004-root / /ubuntu2004-root
 COPY --from=debian11-root / /debian11-root
@@ -83,9 +79,7 @@ RUN for root in \
       ubuntu2004-root \
       debian11-root \
     ; do rm -rf /$root/run/* \
-      && echo localhost > /$root/etc/hostname \
-      && printf "%blocalhost localhost.localdomain\n" "127.0.0.1\t" "::1\t\t" > /$root/etc/hosts \
-      && ln -sf /run/systemd/resolve/stub-resolv.conf /$root/etc/resolv.conf \
+      && cat onesysprep | chroot "$root" sh -s - --yes --operations default,-one-trim \
     ; done
 
 RUN virt-make-fs -s +100M -F qcow2 --partition=mbr --type=ext4 --label=rootfs /centos7-root /centos7.qcow2 \
