@@ -42,6 +42,8 @@ RUN printf "%s\n" \
 # ------------------------------------------------------------------------------
 FROM ubuntu:20.04 as ubuntu-20.04-root
 ARG DEBIAN_FRONTEND=noninteractive
+
+RUN echo "link_in_boot = YES" > /etc/kernel-img.conf
 RUN apt-get update \
  && apt-get install -y \
       ubuntu-minimal \
@@ -70,6 +72,7 @@ RUN sed -i /etc/ssh/sshd_config \
 FROM debian:11 as debian-11-root
 ARG DEBIAN_FRONTEND=noninteractive
 
+RUN echo "link_in_boot = YES" > /etc/kernel-img.conf
 RUN apt-get update \
  && apt-get install -y \
       aptitude \
@@ -146,6 +149,11 @@ RUN printf "%s\n" \
       'GRUB_TERMINAL="console serial"' \
       > /etc/default/grub
 
+RUN printf "%s\n" "" \
+      '# enable login on alternative console' \
+      'ttyS0::respawn:/sbin/getty -L 0 ttyS0 vt100' \
+      >> /etc/inittab
+
 # ------------------------------------------------------------------------------
 FROM image-builder as centos-7-image
 COPY --from=centos-7-root / /rootfs
@@ -215,6 +223,7 @@ RUN cat onesysprep | chroot /rootfs sh -s - --yes --operations default,-one-trim
       : part-resize /dev/sda 1 -1 \
       : resize2fs /dev/sda1 \
       : mount /dev/sda1 / \
+      : command 'sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT=\\\"\)/\1rootfstype=ext4 /" /etc/default/grub' \
       : write /etc/fstab "LABEL=rootfs   /        ext4   defaults        0 1" \
       : sh 'mkinitfs "$(ls -t1 /lib/modules | head -n1)"' \
       : command 'grub-install /dev/sda' \
