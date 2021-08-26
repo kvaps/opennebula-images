@@ -24,7 +24,7 @@ RUN yum -y groupinstall \
 RUN yum -y install \
       grub2 \
       epel-release
-RUN yum -y install https://github.com/OpenNebula/addon-context-linux/releases/download/v5.12.0.2/one-context-5.12.0.2-1.el7.noarch.rpm
+RUN yum -y install https://github.com/OpenNebula/addon-context-linux/releases/download/v6.0.0/one-context-6.0.0-1.el7.noarch.rpm
 RUN yum clean all
 
 RUN sed -i /etc/ssh/sshd_config \
@@ -48,7 +48,7 @@ RUN apt-get update \
       ubuntu-minimal \
       ubuntu-standard \
       linux-image-generic \
- && wget -O /one-context.deb https://github.com/OpenNebula/addon-context-linux/releases/download/v5.12.0.2/one-context_5.12.0.2-1.deb \
+ && wget -O /one-context.deb https://github.com/OpenNebula/addon-context-linux/releases/download/v6.0.0/one-context_6.0.0-1.deb \
  && dpkg -i /one-context.deb || apt-get install -fy \
  && rm -f /one-context.deb \
  && apt-get clean \
@@ -81,7 +81,7 @@ RUN apt-get update \
       task-ssh-server \
       linux-image-generic \
       grub2 \
- && wget -O /one-context.deb https://github.com/OpenNebula/addon-context-linux/releases/download/v5.12.0.2/one-context_5.12.0.2-1.deb \
+ && wget -O /one-context.deb https://github.com/OpenNebula/addon-context-linux/releases/download/v6.0.0/one-context_6.0.0-1.deb \
  && dpkg -i /one-context.deb || apt-get install -fy \
  && rm -f /one-context.deb \
  && apt-get clean \
@@ -130,7 +130,7 @@ RUN printf "%s\n" "auto lo" "iface lo inet loopback" > /etc/network/interfaces \
  && ln -s /etc/init.d/mdev /etc/runlevels/sysinit/ \
  && ln -s /etc/init.d/sshd /etc/runlevels/default/
 
-RUN wget -O /one-context.apk https://github.com/OpenNebula/addon-context-linux/releases/download/v5.12.0.1/one-context-5.12.0.1-r1.apk \
+RUN wget -O /one-context.apk https://github.com/OpenNebula/addon-context-linux/releases/download/v6.0.0/one-context-6.0.0-r1.apk \
  && apk add --no-cache --allow-untrusted /one-context.apk \
  && rm -f /one-context.apk
 
