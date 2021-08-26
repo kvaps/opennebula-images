@@ -33,8 +33,7 @@ RUN sed -i /etc/ssh/sshd_config \
 
 RUN printf "%s\n" \
       'GRUB_TIMEOUT=1' \
-      'GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 console=ttyS0 biosdevname=0 net.ifnames=0"' \
-      'GRUB_TERMINAL="console serial"' \
+      'GRUB_CMDLINE_LINUX_DEFAULT="biosdevname=0 net.ifnames=0"' \
       > /etc/default/grub
 
 # ------------------------------------------------------------------------------
@@ -57,8 +56,7 @@ RUN apt-get update \
 
 RUN printf "%s\n" \
       'GRUB_TIMEOUT=1' \
-      'GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 console=ttyS0 biosdevname=0 net.ifnames=0"' \
-      'GRUB_TERMINAL="console serial"' \
+      'GRUB_CMDLINE_LINUX_DEFAULT="biosdevname=0 net.ifnames=0"' \
       > /etc/default/grub
 
 
@@ -91,8 +89,7 @@ RUN apt-get update \
 
 RUN printf "%s\n" \
       'GRUB_TIMEOUT=1' \
-      'GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 console=ttyS0 biosdevname=0 net.ifnames=0"' \
-      'GRUB_TERMINAL="console serial"' \
+      'GRUB_CMDLINE_LINUX_DEFAULT="biosdevname=0 net.ifnames=0"' \
       > /etc/default/grub
 
 RUN sed -i /etc/ssh/sshd_config \
@@ -145,23 +142,30 @@ RUN sed -i /etc/ssh/sshd_config \
 
 RUN printf "%s\n" \
       'GRUB_TIMEOUT=1' \
-      'GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 console=ttyS0 biosdevname=0 net.ifnames=0"' \
-      'GRUB_TERMINAL="console serial"' \
+      'GRUB_CMDLINE_LINUX_DEFAULT="biosdevname=0 net.ifnames=0"' \
       > /etc/default/grub
 
-RUN printf "%s\n" "" \
-      '# enable login on alternative console' \
-      'ttyS0::respawn:/sbin/getty -L 0 ttyS0 vt100' \
-      >> /etc/inittab
+# Serial console
+#RUN printf "%s\n" \
+#      'GRUB_TIMEOUT=1' \
+#      'GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 console=ttyS0,115200 biosdevname=0 net.ifnames=0"' \
+#      'GRUB_TERMINAL="console serial"' \
+#      'GRUB_SERIAL_COMMAND="serial --speed=115200"' \
+#      > /etc/default/grub
+#RUN printf "%s\n" "" \
+#      '# enable login on alternative console' \
+#      'ttyS0::respawn:/sbin/getty -L 0 ttyS0 vt100' \
+#      >> /etc/inittab
 
 # ------------------------------------------------------------------------------
 FROM image-builder as centos-7-image
 COPY --from=centos-7-root / /rootfs
 RUN cat onesysprep | chroot /rootfs sh -s - --yes --operations default,-one-trim \
  && rm -rf /rootfs/run/* \
+ && ln -sf ../proc/self/mounts /rootfs/etc/mtab \
  && virt-make-fs -s +100M -F qcow2 --partition=mbr --type=ext4 --label=rootfs /rootfs /image.qcow2 \
  && qemu-img resize /image.qcow2 2G \
- && guestfish -a image.qcow2 -- run \
+ && guestfish -a /image.qcow2 -- run \
       : part-set-bootable /dev/sda 1 true \
       : part-resize /dev/sda 1 -1 \
       : resize2fs /dev/sda1 \
@@ -178,9 +182,10 @@ FROM image-builder as ubuntu-20.04-image
 COPY --from=ubuntu-20.04-root / /rootfs
 RUN cat onesysprep | chroot /rootfs sh -s - --yes --operations default,-one-trim \
  && rm -rf /rootfs/run/* \
+ && ln -sf ../proc/self/mounts /rootfs/etc/mtab \
  && virt-make-fs -s +100M -F qcow2 --partition=mbr --type=ext4 --label=rootfs /rootfs /image.qcow2 \
  && qemu-img resize /image.qcow2 2G \
- && guestfish -a image.qcow2 -- run \
+ && guestfish -a /image.qcow2 -- run \
       : part-set-bootable /dev/sda 1 true \
       : part-resize /dev/sda 1 -1 \
       : resize2fs /dev/sda1 \
@@ -197,9 +202,10 @@ FROM image-builder as debian-11-image
 COPY --from=debian-11-root / /rootfs
 RUN cat onesysprep | chroot /rootfs sh -s - --yes --operations default,-one-trim \
  && rm -rf /rootfs/run/* \
+ && ln -sf ../proc/self/mounts /rootfs/etc/mtab \
  && virt-make-fs -s +100M -F qcow2 --partition=mbr --type=ext4 --label=rootfs /rootfs /image.qcow2 \
  && qemu-img resize /image.qcow2 2G \
- && guestfish -a image.qcow2 -- run \
+ && guestfish -a /image.qcow2 -- run \
       : part-set-bootable /dev/sda 1 true \
       : part-resize /dev/sda 1 -1 \
       : resize2fs /dev/sda1 \
@@ -216,14 +222,15 @@ FROM image-builder as alpine-3.14-image
 COPY --from=alpine-3.14-root / /rootfs
 RUN cat onesysprep | chroot /rootfs sh -s - --yes --operations default,-one-trim \
  && rm -rf /rootfs/run/* \
+ && ln -sf ../proc/self/mounts /rootfs/etc/mtab \
  && virt-make-fs -s +100M -F qcow2 --partition=mbr --type=ext4 --label=rootfs /rootfs /image.qcow2 \
  && qemu-img resize /image.qcow2 512M \
- && guestfish -a image.qcow2 -- run \
+ && guestfish -a /image.qcow2 -- run \
       : part-set-bootable /dev/sda 1 true \
       : part-resize /dev/sda 1 -1 \
       : resize2fs /dev/sda1 \
       : mount /dev/sda1 / \
-      : command 'sed -i "s/^\(GRUB_CMDLINE_LINUX_DEFAULT=\\\"\)/\1rootfstype=ext4 /" /etc/default/grub' \
+      : sh 'sed -i /etc/default/grub -e /GRUB_CMDLINE_LINUX_DEFAULT=/s/\"/\"rootfstype=ext4\ /' \
       : write /etc/fstab "LABEL=rootfs   /        ext4   defaults        0 1" \
       : sh 'mkinitfs "$(ls -t1 /lib/modules | head -n1)"' \
       : command 'grub-install /dev/sda' \
