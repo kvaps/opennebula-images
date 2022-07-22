@@ -24,7 +24,7 @@ will suggest:
 ```
 images/alpine-3.13.qcow2      images/alpine-3.16.qcow2      images/centos-8.qcow2         images/debian-11.qcow2        images/fedora-35.qcow2        images/ubuntu-20.04.qcow2                                 
 images/alpine-3.14.qcow2      images/centos-7.qcow2         images/centos-9-stream.qcow2  images/debian-9.qcow2         images/fedora-36.qcow2        images/ubuntu-22.04.qcow2                                 
-images/alpine-3.15.qcow2      images/centos-8-stream.qcow2  images/debian-10.qcow2        images/fedora-34.qcow2        images/ubuntu-18.04.qcow2                                                             ```
+images/alpine-3.15.qcow2      images/centos-8-stream.qcow2  images/debian-10.qcow2        images/fedora-34.qcow2        images/ubuntu-18.04.qcow2
 ```
 
 #### Generate appliance manifest for [OpenNebula Static Marketplace](https://github.com/kvaps/opennebula-static-marketplace):
