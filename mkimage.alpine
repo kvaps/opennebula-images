@@ -55,7 +55,7 @@ gf ln_s /etc/init.d/hwdrivers /mnt/etc/runlevels/sysinit/
 gf ln_s /etc/init.d/mdev /mnt/etc/runlevels/sysinit/
 gf ln_s /etc/init.d/sshd /mnt/etc/runlevels/default/
 
-gf command "wget https://github.com/OpenNebula/addon-context-linux/releases/download/v5.10.0/one-context-5.10.0-r1.apk -O /one-context.apk"
+gf command "wget https://github.com/OpenNebula/addon-context-linux/releases/download/v6.4.0/one-context-6.4.0-r1.apk -O /one-context.apk"
 gf command "apk add --root /mnt --allow-untrusted /one-context.apk"
 gf rm_f "/one-context.apk"
 gf sh "rm -rf /mnt/var/cache/apk/*"
