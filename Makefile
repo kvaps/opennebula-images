@@ -67,7 +67,7 @@ images/debian-11.qcow2:
 
 images/centos-7.qcow2:
 	./mkimage.centos7 "$@" 2G \
-		"https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
+		"https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2c"
 
 images/centos-8.qcow2:
 	./mkimage.centos8 "$@" 2G \
