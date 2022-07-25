@@ -74,11 +74,11 @@ images/centos-8.qcow2:
         "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2"
 
 images/centos-8-stream.qcow2:
-	./mkimage.centos8 "$@" 2G \
+	./mkimage.centos-stream "$@" 2G \
         "https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20220125.1.x86_64.qcow2"
 
 images/centos-9-stream.qcow2:
-	./mkimage.centos8 "$@" 2G \
+	./mkimage.centos-stream "$@" 2G \
         "https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20220718.0.x86_64.qcow2"
 
 images/fedora-34.qcow2:
