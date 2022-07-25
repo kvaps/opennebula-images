@@ -15,7 +15,7 @@ all: \
 	images/debian-10.qcow2 \
 	images/debian-11.qcow2 \
 	images/centos-7.qcow2 \
-	images/centos-8-steram.qcow2 \
+	images/centos-8-stream.qcow2 \
 	images/centos-9-stream.qcow2 \
 	images/fedora-34.qcow2 \
 	images/fedora-35.qcow2 \
