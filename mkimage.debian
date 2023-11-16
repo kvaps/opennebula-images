@@ -32,7 +32,7 @@ gf command "grub-install /dev/sda"
 gf command "update-grub"
 
 gf command "update-initramfs -u"
-gf command "wget https://github.com/OpenNebula/addon-context-linux/releases/download/v5.10.0/one-context_5.10.0-1.deb -O /one-context.deb"
+gf command "wget https://github.com/OpenNebula/addon-context-linux/releases/download/v6.4.0/one-context_6.4.0-1.deb -O /one-context.deb"
 gf command "apt-get purge -y cloud-init"
 gf command "apt-get update"
 gf sh "dpkg -i /one-context.deb || apt-get install -fy"

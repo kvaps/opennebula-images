@@ -29,7 +29,7 @@ gf command "grub2-mkconfig -o /boot/grub2/grub.cfg"
 KERNEL="$(gf ls /lib/modules/ | head -n1)"
 gf command "dracut -f /boot/initramfs-$KERNEL.img $KERNEL"
 
-gf command "curl -L https://github.com/OpenNebula/addon-context-linux/releases/download/v5.10.0/one-context-5.10.0-1.el8.noarch.rpm -o /one-context.rpm"
+gf command "curl -L https://github.com/OpenNebula/addon-context-linux/releases/download/v6.4.0/one-context-6.4.0-1.el8.noarch.rpm -o /one-context.rpm"
 gf command "yum install -y epel-release"
 gf command "yum install -y /one-context.rpm"
 gf rm_f "/one-context.rpm"
